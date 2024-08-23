@@ -122,10 +122,10 @@ public class ItemController {
                            @RequestParam String name,
                            @RequestParam String description,
                            @RequestParam String isLost,
-                           @RequestParam Category category,
+                           @RequestParam String category,
                            @RequestParam MultipartFile file,
                            @RequestParam String location) {
-        this.itemService.create(request, name, description, isLost, category, file, location);
+        this.itemService.create(request, name, description, isLost, Category.valueOf(category), file, location);
         return "redirect:/items";
     }
 
