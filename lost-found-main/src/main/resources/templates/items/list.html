@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layout}">
+<head>
+    <title>Items</title>
+</head>
+<body>
+<div class=" mt-4 container" layout:fragment="content">
+    <a sec:authorize="isAuthenticated()" th:href="@{/items/add}" class="btn btn-dark form-control mb-2">Add New Item</a>
+    <div class="row mb-2">
+        <form class="form-inline" action="/items/search" method="post">
+            <label for="name" class="form-label">Name</label>
+            <input type="text"
+                   id="name"
+                   name="name"
+                   class="form-control"
+                   style="display: inline;width: 18%"
+                   placeholder="Enter item name">
+            <label for="isLost" class="form-label">Type</label>
+            <select id="isLost" name="isLost" class="form-control"
+                    style="display: inline;width: 18%">
+                <option th:value="All" th:text="All" selected></option>
+                <option th:value="Lost" th:text="Lost"></option>
+                <option th:value="Found" th:text="Found"></option>
+            </select>
+            <label for="status" class="form-label">Status</label>
+            <select id="status" name="status" class="form-control"
+                    style="display: inline; width: 18%">
+                <option th:value="OPEN" th:text="Open" selected></option>
+                <option th:value="RESOLVED" th:text="Resolved"></option>
+            </select>
+            <label for="category" class="form-label">Category</label>
+            <select id="category" name="category" class="form-control"
+                    style="display: inline;width: 18%">
+                <option th:value="All" th:text="All" selected></option>
+                <option th:each="cat : ${categories}"
+                        th:value="${cat}"
+                        th:text="${cat}">
+                </option>
+            </select>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+    <div class="row">
+        <div th:each="item : ${items}" class="card m-1 d-flex" style="max-width: 49%;padding-bottom: 0">
+            <div class="row g-0">
+                <div class="col-md-6 pt-2 pb-2">
+                    <img th:src="'data:image/jpeg;base64,' + ${images.get(item)}" class="img-fluid w-100"
+                         alt="...">
+                </div>
+                <div class="col-md-6 p-2" style="font-size: 14px; padding-bottom: 0">
+                    <div class="card-body" style="padding-bottom: 0">
+                        <h5 class="card-title mb-1" th:text="${item.getName()}"></h5>
+                        <p class="card-text mb-1" th:text="${item.getDescription()}"><strong>Description:</strong></p>
+                        <p class="card-text mb-1"><strong>Category: </strong><span
+                                th:text="${item.category}"></span></p>
+                        <p class="card-text mb-1"><strong>Location: </strong><span
+                                th:text="${item.getLocation()}"></span></p>
+                        <p class="card-text mb-1"><strong>Type: </strong><span
+                                th:text="${item.isLost ? 'Lost' : 'Found'}"></span></p>
+                        <p th:if="${#authentication.name.equals(item.user.id)}" class="card-text mb-1"><strong>Published
+                            by: </strong><span
+                                th:text="${item.getUser().getName()}"></span></p>
+                        <strong th:if="${!#authentication.name.equals(item.user.id)}">Published by: </strong>
+                        <a th:if="${!#authentication.name.equals(item.user.id)}" th:href="@{'/users/contact/{id}'
+                        (id=${item.getUser().getId()})}" th:text=" ${item.user.getName()}"></a>
+                        <p class="card-text mb-1"><strong>Status: </strong><span
+                                th:text="${item.getStatus().name()}"></span></p>
+                        <p class="card-text mb-1"><small class="text-body-secondary"
+                                                         th:text="${dateTimes.get(item)}"></small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="fragments/paging :: pageSection(${items})"></div>
+</div>
+
+</body>
+</html>
