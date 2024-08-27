@@ -4,6 +4,8 @@ import {BrowserRouter as Router, Route, RedirectFunction, Routes} from 'react-ro
 import ItemsPage from "../items-page/ItemsPage";
 import itemService from "../../service/itemService";
 import Header from "../header/header";
+import Login from '../login/login';
+import AddItem from "../items-page/AddItem";
 
 const App = () => {
   const [items, setItems] = useState([]);
@@ -62,7 +64,7 @@ const App = () => {
   //       });
   // };
   //
-  // const addProduct = (name, price, quantity, category, manufacturer) => {
+  // const addItems = (name, price, quantity, category, manufacturer) => {
   //   EShopService.addProduct(name, price, quantity, category, manufacturer)
   //       .then(() => {
   //         loadProducts();
@@ -91,6 +93,8 @@ const App = () => {
               {/*<Router>*/}
                   <Routes>
                       <Route path="/items" element={<ItemsPage items={items} categories={categories}/>} />
+                      <Route path="/items/add" element={<AddItem categories={categories} />} />
+                      <Route path="/login" element={<Login />} />
                       {/* other routes */}
                   </Routes>
               {/*</Router>*/}

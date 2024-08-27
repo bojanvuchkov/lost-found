@@ -2,13 +2,20 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 
 const header = (props) => {
-    // let authenticate
-    // if (localStorage.getItem("JWT")) {
-    //     authenticate = (<button className="btn btn-outline-info my-2 my-sm-0"
-    //                             onClick={() => localStorage.removeItem("JWT")}>Logout</button>);
-    // } else {
-    //     authenticate = (<Link className="btn btn-outline-info my-2 my-sm-0" to={"/login"}>Login</Link>);
-    // }
+    let authenticate
+    if (localStorage.getItem("JWT")) {
+        authenticate = (<button className="btn btn-outline-info my-2 my-sm-0"
+                                onClick={() => localStorage.removeItem("JWT")}>Logout</button>);
+    } else {
+        authenticate = (<Link className="btn btn-outline-info my-2 my-sm-0" to={"/login"}>Login</Link>);
+    }
+
+    const isAuthenticated = !!localStorage.getItem("JWT");
+
+    const handleLogout = () => {
+        localStorage.removeItem("JWT");
+        window.location.href = "/login";
+    };
 
     return (
         <header className="p-3 text-bg-dark">
@@ -22,6 +29,14 @@ const header = (props) => {
                     style={{marginLeft: '80%'}}>
                     <li>
                         <Link className="nav-link px-2 text-white" to={"/items"}>Items</Link>
+                    </li>
+                    {isAuthenticated && (
+                        <li>
+                            <Link className="nav-link px-2 text-white" to={`/users/${props.userId}`}>Profile</Link>
+                        </li>
+                    )}
+                    <li>
+                        {authenticate}
                     </li>
                 </ul>
             </div>

@@ -77,8 +77,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item create(HttpServletRequest request, String name, String description, String isLost, Category category, MultipartFile file, String location) {
         boolean lost = Objects.equals(isLost, "Lost");
-        String username = request.getUserPrincipal().getName();
-        User user = userRepository.findById(username).orElseThrow(UserNotFoundException::new);
+        //TODO uncomment when login works
+//        String username = request.getUserPrincipal().getName();
+//        User user = userRepository.findById(username).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findById("riste.stojanov").orElseThrow(UserNotFoundException::new);
         Item item = null;
         try {
             byte[] imageBytes = IOUtils.toByteArray(new URL("https://clipground.com/images/no-image-png-5.jpg"));

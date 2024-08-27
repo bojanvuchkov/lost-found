@@ -1,17 +1,21 @@
 package mk.ukim.finki.wp.lostfound.web.rest;
 
 import jakarta.servlet.http.HttpServletRequest;
+import mk.ukim.finki.wp.lostfound.model.Category;
 import mk.ukim.finki.wp.lostfound.model.Item;
 import mk.ukim.finki.wp.lostfound.service.ItemService;
 import mk.ukim.finki.wp.lostfound.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/items")
 public class ItemRestController {
 
@@ -76,17 +80,21 @@ public class ItemRestController {
 //        return "items/add";
 //    }
 //
-//    @PostMapping("/add")
-//    public String saveItem(HttpServletRequest request,
-//                           @RequestParam String name,
-//                           @RequestParam String description,
-//                           @RequestParam String isLost,
-//                           @RequestParam String category,
-//                           @RequestParam MultipartFile file,
-//                           @RequestParam String location) {
-//        this.itemService.create(request, name, description, isLost, Category.valueOf(category), file, location);
-//        return "redirect:/items";
-//    }
+    @PostMapping("/add")
+    public ResponseEntity<String> saveItem(HttpServletRequest request,
+                                           @RequestParam String name,
+                                           @RequestParam String description,
+                                           @RequestParam String isLost,
+                                           @RequestParam String category,
+                                           @RequestParam("file") MultipartFile file,
+                                           @RequestParam String location) {
+        try{
+            this.itemService.create(request, name, description, isLost, Category.valueOf(category), file, location);
+            return new ResponseEntity<>("Item created successfully", HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Failed to create item: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 //
 //    @PostMapping("/edit/{id}")
 //    public String editItem(HttpServletRequest request,

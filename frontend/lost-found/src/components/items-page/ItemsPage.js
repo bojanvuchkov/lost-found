@@ -4,6 +4,8 @@ import './ItemsPage.css';
 import FilterForm from "../filter/FilterForm";
 import axios from "../../custom-axios/axios";
 import Pagination from "../pagination/Pagination";
+import AddItem from "./AddItem";
+import {Link} from "react-router-dom";
 
 const ItemsPage = ({ categories}) => {
     const [items, setItems] = useState([]);
@@ -39,6 +41,27 @@ const ItemsPage = ({ categories}) => {
         fetchItems(filters);
     };
 
+    const handleSubmit = async (formData) => {
+        const submitData = new FormData();
+        for (const key in formData) {
+            submitData.append(key, formData[key]);
+        }
+
+        const url = formData.id ? `/items/edit/${formData.id}` : '/items/add';
+
+        try {
+            await axios.post(url, submitData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            fetchItems();
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
+    };
+
+
     useEffect(() => {
         fetchItems();
     }, [currentPage, pageSize]);
@@ -56,7 +79,15 @@ const ItemsPage = ({ categories}) => {
 
     return (
         <div className="container mt-4">
-            <a href="/items/add" className="btn btn-dark mb-4 w-100">Add New Item</a>
+            {/*<a href="/items/add" className="btn btn-dark mb-4 w-100">Add New Item</a>*/}
+            {/*<div className="btn btn-dark mb-4 w-100">*/}
+            {/*    <AddItem categories={categories} onSubmit={handleSubmit}></AddItem>*/}
+            {/*</div>*/}
+
+            {/*TODO tuka treba da se prakja i item za edit*/}
+            <Link to="/items/add" state={{ categories, item:null }} className="btn btn-dark mb-4 w-100">
+                Add New Item
+            </Link>
 
             <div className="row mb-2">
                 <FilterForm onFilter={handleFilter} />
