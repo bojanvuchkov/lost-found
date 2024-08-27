@@ -5,11 +5,13 @@ import mk.ukim.finki.wp.lostfound.model.Email;
 import mk.ukim.finki.wp.lostfound.model.Item;
 import mk.ukim.finki.wp.lostfound.model.User;
 import mk.ukim.finki.wp.lostfound.model.dto.UserDetailsDTO;
+import mk.ukim.finki.wp.lostfound.model.exceptions.ItemNotFoundException;
 import mk.ukim.finki.wp.lostfound.model.exceptions.UserNotFoundException;
 import mk.ukim.finki.wp.lostfound.repository.EmailRepository;
 import mk.ukim.finki.wp.lostfound.service.ItemService;
 import mk.ukim.finki.wp.lostfound.service.UserService;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -74,15 +76,24 @@ public class UserRestController {
             return ResponseEntity.notFound().build();
     }
 
-    @PostMapping ("/{id}/deleteMessage/{messageId}")
-    public String deleteMessage(HttpServletRequest request,
-                                @PathVariable String id,
-                                @PathVariable Long messageId,
-                                Model model) {
-        if(request.getUserPrincipal().getName().equals(id))
-            this.userService.deleteMessage(id, messageId);
-        return "redirect:/users/{id}";
+    @DeleteMapping("/{id}/deleteMessage/{messageId}")
+    public ResponseEntity<String> deleteMessage(HttpServletRequest request, @PathVariable String id, @PathVariable Long messageId) {
+        //TODO fix once login works
+//        if(request.getUserPrincipal().getName().equals(item.getUser().getId()))
+//            this.itemService.delete(id);
+        this.userService.deleteMessage(id, messageId);
+        return new ResponseEntity<>("Item deleted successfully", HttpStatus.NO_CONTENT);
     }
+
+//    @PostMapping ("/{id}/deleteMessage/{messageId}")
+//    public String deleteMessage(HttpServletRequest request,
+//                                @PathVariable String id,
+//                                @PathVariable Long messageId,
+//                                Model model) {
+//        if(request.getUserPrincipal().getName().equals(id))
+//            this.userService.deleteMessage(id, messageId);
+//        return "redirect:/users/{id}";
+//    }
 
     @GetMapping("/contact/{id}")
     public String sendMailFrom(HttpServletRequest request,

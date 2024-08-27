@@ -5,9 +5,6 @@
 /.pnp
 .pnp.js
 
-# Intellij IDEA
-.idea
-
 # testingg
 /coverage
 

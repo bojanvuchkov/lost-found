@@ -42,9 +42,10 @@ const userService = {
     },
     getUser: () => {
         //TODO change with actual ID
-        let resp = axios.get("/users/riste.stojanov");
-        console.log(resp);
-        return resp;
+        return axios.get("/users/riste.stojanov");
+    },
+    deleteMessage: (id, messageId) => {
+        return axios.delete(`/users/${id}/deleteMessage/${messageId}`)
     }
 }
 

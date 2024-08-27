@@ -5,7 +5,6 @@ import itemService from "../../service/itemService";
 
 //TODO pass all props
 const UserDetails = () => {
-    // const isUserLoggedIn = loggedInUser && loggedInUser.id; // Assuming loggedInUser object is provided
     const [loggedInUser, setLoggedInUser] = useState([]);
     const [items, setItems] = useState([]);
     const [dateTimesEmails, setDateTimesEmails] = useState([]);
@@ -20,11 +19,10 @@ const UserDetails = () => {
         loadUser();
     };
 
-    //TODO for the purpose of testing user details, edit/delete item
+    //TODO send user id here once login works
     const loadUser = () => {
         itemService.getUser()
             .then((data) => {
-                console.log(data)
                 setLoggedInUser(data.data.loggedInUser);
                 setItems(data.data.items);
                 setDateTimesEmails(data.data.dateTimesEmails);
@@ -37,6 +35,16 @@ const UserDetails = () => {
         itemService.deleteItem(id)
             .then(() => {
                 setItems(items.filter(item => item.id !== id));
+            })
+            .catch(error => {
+                console.error("Error deleting item:", error);
+            });
+    };
+
+    const handleDeleteMessage = (id, messageId) => {
+        itemService.deleteMessage(id, messageId)
+            .then(() => {
+                setReceivedEmails(receivedEmails.filter(email => email.id !== messageId));
             })
             .catch(error => {
                 console.error("Error deleting item:", error);
@@ -74,12 +82,11 @@ const UserDetails = () => {
                                 <td>{email.message}</td>
                                 <td>{dateTimesEmails[email.id]}</td>
                                 <td>
-                                    <form
-                                        action={`/users/${loggedInUser.id}/deleteMessage/${email.id}`}
-                                        method="post"
-                                    >
-                                        <input type="submit" className="btn btn-danger" value="Delete"/>
-                                    </form>
+                                    <button
+                                        onClick={() => handleDeleteMessage(loggedInUser.id, email.id)}
+                                        className="btn btn-danger">
+                                        Delete
+                                    </button>
                                 </td>
                             </tr>
                         ))}
