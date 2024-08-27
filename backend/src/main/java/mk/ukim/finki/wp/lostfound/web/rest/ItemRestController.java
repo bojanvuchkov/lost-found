@@ -5,6 +5,7 @@ import mk.ukim.finki.wp.lostfound.model.Category;
 import mk.ukim.finki.wp.lostfound.model.Item;
 import mk.ukim.finki.wp.lostfound.service.ItemService;
 import mk.ukim.finki.wp.lostfound.service.UserService;
+import mk.ukim.finki.wp.lostfound.model.exceptions.ItemNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -41,16 +42,17 @@ public class ItemRestController {
                 PageRequest.of(pageNum - 1, size, Sort.by(Sort.Direction.DESC, "dateRegistered")));
     }
 
-//
-//    @PostMapping("/delete/{id}")
-//    public String deleteItem(HttpServletRequest request, @PathVariable Long id) {
-//        Item item = itemService.findById(id).orElseThrow(ItemNotFoundException::new);
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteItem(HttpServletRequest request, @PathVariable Long id) {
+        Item item = itemService.findById(id).orElseThrow(ItemNotFoundException::new);
+        //TODO fix once login works
 //        if(request.getUserPrincipal().getName().equals(item.getUser().getId()))
 //            this.itemService.delete(id);
-//        return "redirect:/items";
-//
-//    }
-//
+        this.itemService.delete(id);
+        return new ResponseEntity<>("Item deleted successfully", HttpStatus.NO_CONTENT);
+    }
+
 //
 //    @GetMapping("/edit/{id}")
 //    public String editItemPage(@PathVariable Long id,

@@ -1,6 +1,6 @@
 import axios from "../custom-axios/axios";
 
-    const userService = {
+const userService = {
     fetchItems: () => {
         return axios.get("/items")
     },
@@ -10,9 +10,9 @@ import axios from "../custom-axios/axios";
     // fetchProducts: () => {
     //     return axios.get("/products");
     // },
-    // deleteProduct: (id) => {
-    //     return axios.delete(`/products/delete/${id}`);
-    // },
+    deleteItem: (id) => {
+        return axios.delete(`/items/delete/${id}`);
+    },
     addItem: (name, price, quantity, category, manufacturer) => {
         return axios.post("/products/add", {
             "name": name,
@@ -40,6 +40,12 @@ import axios from "../custom-axios/axios";
             "password": password
         });
     },
+    getUser: () => {
+        //TODO change with actual ID
+        let resp = axios.get("/users/riste.stojanov");
+        console.log(resp);
+        return resp;
+    }
 }
 
 export default userService;

@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import mk.ukim.finki.wp.lostfound.model.Email;
 import mk.ukim.finki.wp.lostfound.model.Item;
 import mk.ukim.finki.wp.lostfound.model.User;
+import mk.ukim.finki.wp.lostfound.model.dto.UserDetailsDTO;
 import mk.ukim.finki.wp.lostfound.model.exceptions.UserNotFoundException;
 import mk.ukim.finki.wp.lostfound.repository.EmailRepository;
 import mk.ukim.finki.wp.lostfound.service.ItemService;
@@ -35,7 +36,7 @@ public class UserRestController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getDetails(@PathVariable String id, Model model) {
+    public ResponseEntity<UserDetailsDTO> getDetails(@PathVariable String id, Model model) {
         User user = userService.findById(id).orElseThrow(UserNotFoundException::new);
 //        model.addAttribute("loggedInUser", loggedInUser);
 //        HashMap<Email, String> dateTimesEmails = new HashMap<>();
@@ -55,8 +56,20 @@ public class UserRestController {
 //        });
 //        model.addAttribute("images", images);
 //        model.addAttribute("dateTimes", dateTimes);
-        if(user!=null)
-            return ResponseEntity.ok(user);
+        if(user!=null) {
+            List<Item> items = itemService.listItems(PageRequest.ofSize(100)).stream().filter(item -> item.getUser().getId().equals("riste.stojanov")).toList();
+            HashMap<Long, String> dateTimesEmails = new HashMap<>();
+            HashMap<Long, String> dateTimes = new HashMap<>();
+            List<Email> receivedEmails = emailRepository.findAllByReceiver(user);
+            receivedEmails.forEach(email -> {
+                dateTimesEmails.put(email.getId(), email.getDateTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
+            });
+            items.forEach(item -> {
+                dateTimes.put(item.getId(), item.getDateRegistered().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
+            });
+            UserDetailsDTO dto = new UserDetailsDTO(user, items, dateTimesEmails, receivedEmails, dateTimes);
+            return ResponseEntity.ok(dto);
+        }
         else
             return ResponseEntity.notFound().build();
     }

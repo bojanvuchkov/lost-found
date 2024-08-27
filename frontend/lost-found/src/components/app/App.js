@@ -6,6 +6,7 @@ import itemService from "../../service/itemService";
 import Header from "../header/header";
 import Login from '../login/login';
 import AddItem from "../items-page/AddItem";
+import UserDetails from "../users/details";
 
 const App = () => {
   const [items, setItems] = useState([]);
@@ -41,7 +42,6 @@ const App = () => {
           setItems(data.data.content);
         });
   };
-
 
   // const loadUsers = () => {
   //   userService.fetchUsers()
@@ -95,6 +95,8 @@ const App = () => {
                       <Route path="/items" element={<ItemsPage items={items} categories={categories}/>} />
                       <Route path="/items/add" element={<AddItem categories={categories} />} />
                       <Route path="/login" element={<Login />} />
+                      {/*TODO change once login is implemented*/}
+                      <Route path="/userDetails" element={<UserDetails />} />
                       {/* other routes */}
                   </Routes>
               {/*</Router>*/}

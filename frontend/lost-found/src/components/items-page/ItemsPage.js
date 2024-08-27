@@ -7,7 +7,7 @@ import Pagination from "../pagination/Pagination";
 import AddItem from "./AddItem";
 import {Link} from "react-router-dom";
 
-const ItemsPage = ({ categories}) => {
+const ItemsPage = ({ categories }) => {
     const [items, setItems] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
