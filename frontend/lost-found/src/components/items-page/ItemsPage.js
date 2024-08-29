@@ -13,6 +13,7 @@ const ItemsPage = (categories) => {
     const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
+
     const fetchItems = async (filters = {}) => {
         try {
             const response = await axios.get('/items', {
@@ -79,9 +80,19 @@ const ItemsPage = (categories) => {
                                     <p className="card-text mb-1"><strong>Location:</strong>{item.location}</p>
                                     <p className="card-text mb-1"><strong>Type:</strong>{item ? 'Lost' : 'Found'}</p>
                                     <p className="card-text mb-1"><strong>Status:</strong>{item.status}</p>
-                                    <p className="card-text"><strong>Published by:</strong>{item.user.name}</p>
+                                    <p className="card-text">
+                                        <strong>Published by:</strong>
+                                        {localStorage.getItem('userId') !== item.user.id ? (
+                                            <Link to={`/users/contact/${item.user.id}`}>
+                                                {item.user.name}
+                                            </Link>
+                                        ) : (
+                                            item.user.name
+                                        )}
+                                    </p>
                                     <p className="card-text"><small
-                                        className="text-muted">{format(item.dateRegistered,'dd.MM.yyy hh:MM')}</small></p>
+                                        className="text-muted">{format(item.dateRegistered, 'dd.MM.yyy hh:MM')}</small>
+                                    </p>
                                 </div>
                             </div>
                         </div>

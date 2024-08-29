@@ -7,10 +7,10 @@ const AddItem = (categories) => {
     const location = useLocation();
     const navigate = useNavigate();
     const item = location.state || {};
-    const url = item? `/items/edit/${item.id}` : '/items/add';
+    const url = item.id === undefined ? '/items/add' : `/items/edit/${item.id}`;
 
     const [formData, setFormData] = useState({
-        userId:localStorage.getItem("userId"),
+        userId: localStorage.getItem("userId"),
         name: item?.name || '',
         description: item?.description || '',
         isLost: item?.isLost || 'Lost',
@@ -41,8 +41,6 @@ const AddItem = (categories) => {
         for (const key in formData) {
             submitData.append(key, formData[key]);
         }
-        console.log(formData)
-        console.log(url)
         try {
             const response = await axios.post(url, submitData, {
                 headers: {

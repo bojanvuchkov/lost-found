@@ -4,8 +4,9 @@ import ItemsPage from "../items-page/ItemsPage";
 import Header from "../header/header";
 import Login from '../login/login';
 import AddItem from "../items-page/AddItem";
-import UserDetails from "../users/details";
+import UserDetails from "../users/Details";
 import React from "react";
+import Mail from "../users/Mail";
 
 const App = () => {
   const categories = [
@@ -62,6 +63,7 @@ const App = () => {
                       <Route path="/items/edit/:id" element={<AddItem categories={categories} />} />
                       <Route path="/login" element={<Login />} />
                       <Route path="/users/:id" element={<UserDetails />} />
+                      <Route path="/users/contact/:id" element={<Mail />} />
                       {/* other routes */}
                   </Routes>
               {/*</Router>*/}

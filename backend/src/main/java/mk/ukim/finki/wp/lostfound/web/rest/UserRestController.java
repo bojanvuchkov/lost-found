@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import mk.ukim.finki.wp.lostfound.model.Email;
 import mk.ukim.finki.wp.lostfound.model.Item;
 import mk.ukim.finki.wp.lostfound.model.User;
+import mk.ukim.finki.wp.lostfound.model.dto.MailDTO;
 import mk.ukim.finki.wp.lostfound.model.dto.UserDetailsDTO;
 import mk.ukim.finki.wp.lostfound.model.exceptions.ItemNotFoundException;
 import mk.ukim.finki.wp.lostfound.model.exceptions.UserNotFoundException;
@@ -61,23 +62,26 @@ public class UserRestController {
     }
 
     @GetMapping("/contact/{id}")
-    public String sendMailFrom(HttpServletRequest request,
-                               @PathVariable String id,
-                               Model model) {
+    public ResponseEntity<MailDTO> sendMailFrom(HttpServletRequest request,
+                                                @PathVariable String id) {
         User receiver = userService.findById(id).orElseThrow(UserNotFoundException::new);
         String username = request.getUserPrincipal().getName();
-        model.addAttribute("username", username);
-        model.addAttribute("receiver", receiver);
-        return "users/mail";
+
+        MailDTO dto = new MailDTO(username, receiver);
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping("/send")
-    public String sendMail(HttpServletRequest request,
-                           @RequestParam String receiver,
-                           @RequestParam String subject,
-                           @RequestParam String message) {
-        userService.sendMail(request, receiver, subject, message);
-        return "redirect:/items";
+    public ResponseEntity<String> sendMail(HttpServletRequest request,
+                                           @RequestParam String receiver,
+                                           @RequestParam String subject,
+                                           @RequestParam String message) {
+        try {
+            userService.sendMail(request, receiver, subject, message);
+            return ResponseEntity.ok("Mail sent successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send mail");
+        }
     }
 
 }

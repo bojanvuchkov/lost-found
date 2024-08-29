@@ -37,6 +37,9 @@ const userService = {
     getUser: (id) => {
         return axios.get(`/users/${id}`);
     },
+    getReceiver: (id) => {
+        return axios.get(`/users/contact/${id}`);
+    },
     deleteMessage: (id, messageId) => {
         return axios.delete(`/users/${id}/deleteMessage/${messageId}`)
     }
