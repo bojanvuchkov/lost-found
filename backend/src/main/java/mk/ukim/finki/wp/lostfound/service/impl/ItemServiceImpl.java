@@ -1,6 +1,8 @@
 package mk.ukim.finki.wp.lostfound.service.impl;
 
 import jakarta.servlet.http.HttpServletRequest;
+import mk.ukim.finki.wp.lostfound.config.JwtAuthenticationFilter;
+import mk.ukim.finki.wp.lostfound.config.JwtTokenProvider;
 import mk.ukim.finki.wp.lostfound.model.Category;
 import mk.ukim.finki.wp.lostfound.model.Item;
 import mk.ukim.finki.wp.lostfound.model.User;
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -26,10 +29,14 @@ import java.util.Optional;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public ItemServiceImpl(ItemRepository itemRepository, UserRepository userRepository) {
+    public ItemServiceImpl(ItemRepository itemRepository, UserRepository userRepository, JwtTokenProvider jwtTokenProvider, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Override
@@ -77,14 +84,12 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item create(HttpServletRequest request, String name, String description, String isLost, Category category, MultipartFile file, String location) {
         boolean lost = Objects.equals(isLost, "Lost");
-        //TODO uncomment when login works
-//        String username = request.getUserPrincipal().getName();
-//        User user = userRepository.findById(username).orElseThrow(UserNotFoundException::new);
-        User user = userRepository.findById("riste.stojanov").orElseThrow(UserNotFoundException::new);
-        Item item = null;
+        String username = jwtTokenProvider.getUsername(jwtAuthenticationFilter.getTokenFromRequest(request));
+        User user = userRepository.findById(username).orElseThrow(UserNotFoundException::new);
+        Item item;
         try {
             byte[] imageBytes = IOUtils.toByteArray(new URL("https://clipground.com/images/no-image-png-5.jpg"));
-            item = new Item(name, description, lost, category, !file.isEmpty() ? file.getBytes() : imageBytes, location, user);
+            item = new Item(name, description, lost, category, file != null && !file.isEmpty() ? file.getBytes() : imageBytes, location, user);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -103,7 +108,7 @@ public class ItemServiceImpl implements ItemService {
         item.setStatus(status1);
         if (status1.equals(Status.RESOLVED))
             item.setDateResolved(LocalDateTime.now());
-        if (!file.isEmpty()) {
+        if (file != null && !file.isEmpty()) {
             try {
                 item.setImage(file.getBytes());
             } catch (IOException e) {
@@ -117,5 +122,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public void delete(Long id) {
         itemRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Item> findItemsByUser(User user) {
+        return itemRepository.findAllByUser(user);
     }
 }

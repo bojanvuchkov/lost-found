@@ -3,17 +3,19 @@ import axios from '../../custom-axios/axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {useLocation, useNavigate} from "react-router-dom";
 
-const AddItem = () => {
+const AddItem = (categories) => {
     const location = useLocation();
     const navigate = useNavigate();
-    const { categories, item } = location.state || {};
+    const item = location.state || {};
+    const url = item? `/items/edit/${item.id}` : '/items/add';
 
     const [formData, setFormData] = useState({
+        userId:localStorage.getItem("userId"),
         name: item?.name || '',
         description: item?.description || '',
         isLost: item?.isLost || 'Lost',
         status: item?.status || 'OPEN',
-        category: item?.category || '',
+        category: item?.category || 'PHONES',
         location: item?.location || '',
         file: null,
     });
@@ -39,9 +41,8 @@ const AddItem = () => {
         for (const key in formData) {
             submitData.append(key, formData[key]);
         }
-
-        const url = item ? `/items/edit/${item.id}` : '/items/add';
         console.log(formData)
+        console.log(url)
         try {
             const response = await axios.post(url, submitData, {
                 headers: {
@@ -123,7 +124,7 @@ const AddItem = () => {
                         value={formData.category}
                         onChange={handleInputChange}
                     >
-                        {categories.map((cat, index) => (
+                        {categories.categories.map((cat, index) => (
                             <option key={index} value={cat}>
                                 {cat}
                             </option>

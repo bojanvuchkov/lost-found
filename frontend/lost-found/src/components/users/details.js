@@ -1,15 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useParams} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import itemService from "../../service/itemService";
+import { format } from 'date-fns';
 
-//TODO pass all props
 const UserDetails = () => {
     const [loggedInUser, setLoggedInUser] = useState([]);
     const [items, setItems] = useState([]);
-    const [dateTimesEmails, setDateTimesEmails] = useState([]);
     const [receivedEmails, setReceivedEmails] = useState([]);
-    const [dateTimes, setDateTimes] = useState([]);
+    const {id} = useParams()
 
     useEffect(() => {
         fetchData();
@@ -19,15 +18,12 @@ const UserDetails = () => {
         loadUser();
     };
 
-    //TODO send user id here once login works
     const loadUser = () => {
-        itemService.getUser()
+        itemService.getUser(id)
             .then((data) => {
                 setLoggedInUser(data.data.loggedInUser);
                 setItems(data.data.items);
-                setDateTimesEmails(data.data.dateTimesEmails);
                 setReceivedEmails(data.data.receivedEmails);
-                setDateTimes(data.data.dateTimes);
             })
     }
 
@@ -80,7 +76,7 @@ const UserDetails = () => {
                                 </td>
                                 <td>{email.subject}</td>
                                 <td>{email.message}</td>
-                                <td>{dateTimesEmails[email.id]}</td>
+                                <td>{format(email.dateTime,'dd.MM.yy hh:MM')}</td>
                                 <td>
                                     <button
                                         onClick={() => handleDeleteMessage(loggedInUser.id, email.id)}
@@ -101,7 +97,7 @@ const UserDetails = () => {
                         <div className="row g-0">
                             <div className="col-md-6 pt-2 pb-2">
                                 <img src={`data:image/jpeg;base64,` + item.image} className="img-fluid w-100"
-                                     alt={'image'}/>
+                                     alt={''}/>
                             </div>
                             <div className="col-md-5" style={{fontSize: '14px'}}>
                                 <div className="card-body">
@@ -132,10 +128,10 @@ const UserDetails = () => {
                                         <strong>Status:</strong> {item.status}
                                     </p>
                                     <p className="card-text mb-1">
-                                        <small className="text-body-secondary">{dateTimes[item.id]}</small>
+                                        <small className="text-body-secondary">{format(item.dateRegistered,'dd.MM.yy hh:MM')}</small>
                                     </p>
                                     <div className="col-md-2 mt-auto pb-2">
-                                        <Link to={`/items/edit/${item.id}`} className="btn btn-success text-center"
+                                        <Link to={`/items/edit/${item.id}`} state={item} className="btn btn-success text-center"
                                               style={{width: '70px'}}>
                                             Edit
                                         </Link>

@@ -1,19 +1,18 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import userService from "../../service/itemService";  // Assuming the login method is in itemService
 
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
         userService.login(username, password)
             .then(response => {
                 localStorage.setItem("JWT", response.data.token);
-                navigate("/items");
+                localStorage.setItem("userId",response.data.id)
+                window.location.href = "/items";
             })
             .catch(() => {
                 setError("Invalid username or password");

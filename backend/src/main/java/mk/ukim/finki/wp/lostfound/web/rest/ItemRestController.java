@@ -23,6 +23,7 @@ public class ItemRestController {
     private final ItemService itemService;
     private final UserService userService;
 
+
     public ItemRestController(ItemService itemService, UserService userService) {
         this.itemService = itemService;
         this.userService = userService;
@@ -36,7 +37,7 @@ public class ItemRestController {
                                    @RequestParam(required = false) String isLost,
                                    @RequestParam(required = false) String category,
                                    @RequestParam(required = false) String status
-                                   ) {
+    ) {
 
         return itemService.filter(name, isLost, status, category,
                 PageRequest.of(pageNum - 1, size, Sort.by(Sort.Direction.DESC, "dateRegistered")));
@@ -44,75 +45,49 @@ public class ItemRestController {
 
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteItem(HttpServletRequest request, @PathVariable Long id) {
-        Item item = itemService.findById(id).orElseThrow(ItemNotFoundException::new);
-        //TODO fix once login works
-//        if(request.getUserPrincipal().getName().equals(item.getUser().getId()))
-//            this.itemService.delete(id);
-        this.itemService.delete(id);
-        return new ResponseEntity<>("Item deleted successfully", HttpStatus.NO_CONTENT);
+    public ResponseEntity<?> deleteItem(@PathVariable Long id) {
+        try {
+            this.itemService.delete(id);
+            return ResponseEntity.noContent().build();
+        }
+        catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
-//
-//    @GetMapping("/edit/{id}")
-//    public String editItemPage(@PathVariable Long id,
-//                               HttpServletRequest request,
-//                               Model model) {
-//        Item item = itemService.findById(id).orElseThrow(ItemNotFoundException::new);
-//        if(request.getUserPrincipal().getName().equals(item.getUser().getId())) {
-//            Category[] categories = Category.values();
-//            String username = request.getUserPrincipal().getName();
-//            model.addAttribute("username", username);
-//            model.addAttribute("image", Base64.getEncoder().encodeToString(item.getImage()));
-//            model.addAttribute("categories", categories);
-//            model.addAttribute("item", item);
-//            return "items/add";
-//        }
-//        else
-//            return "redirect:/items";
-//    }
-//
-//    @GetMapping("/add")
-//    public String addItemPage(HttpServletRequest request,
-//                              Model model) {
-//        Category[] categories = Category.values();
-//        String username = request.getUserPrincipal().getName();
-//        model.addAttribute("username", username);
-//        model.addAttribute("categories", categories);
-//        return "items/add";
-//    }
-//
     @PostMapping("/add")
     public ResponseEntity<String> saveItem(HttpServletRequest request,
                                            @RequestParam String name,
                                            @RequestParam String description,
                                            @RequestParam String isLost,
                                            @RequestParam String category,
-                                           @RequestParam("file") MultipartFile file,
+                                           @RequestParam(required = false) MultipartFile file,
                                            @RequestParam String location) {
-        try{
+        try {
             this.itemService.create(request, name, description, isLost, Category.valueOf(category), file, location);
             return new ResponseEntity<>("Item created successfully", HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to create item: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-//
-//    @PostMapping("/edit/{id}")
-//    public String editItem(HttpServletRequest request,
-//                           @PathVariable("id") Long id,
-//                           @RequestParam String name,
-//                           @RequestParam String description,
-//                           @RequestParam String isLost,
-//                           @RequestParam Category category,
-//                           @RequestParam String status,
-//                           @RequestParam MultipartFile file,
-//                           @RequestParam String location) {
-//        Item item = itemService.findById(id).orElseThrow(ItemNotFoundException::new);
-//        if(request.getUserPrincipal().getName().equals(item.getUser().getId()))
-//            itemService.update(id, name, description, isLost, status, category, file, location);
-//        return "redirect:/items";
-//    }
+
+    @PostMapping("/edit/{id}")
+    public ResponseEntity<?> editItem(
+            @PathVariable("id") Long id,
+            @RequestParam String name,
+            @RequestParam String description,
+            @RequestParam String isLost,
+            @RequestParam Category category,
+            @RequestParam String status,
+            @RequestParam(required = false) MultipartFile file,
+            @RequestParam String location) {
+        try {
+            Item item = itemService.update(id, name, description, isLost, status, category, file, location);
+            return ResponseEntity.ok(item);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
 
 

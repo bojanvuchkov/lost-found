@@ -1,18 +1,13 @@
 import './App.css';
-import React, { useState, useEffect } from "react";
-import {BrowserRouter as Router, Route, RedirectFunction, Routes} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import ItemsPage from "../items-page/ItemsPage";
-import itemService from "../../service/itemService";
 import Header from "../header/header";
 import Login from '../login/login';
 import AddItem from "../items-page/AddItem";
 import UserDetails from "../users/details";
+import React from "react";
 
 const App = () => {
-  const [items, setItems] = useState([]);
-  const [users, setUsers] = useState([]);
-  // const [categories, setCategories] = useState([]);
-  const [emails, setEmails] = useState([]);
   const categories = [
       'PHONES',
       'LAPTOPS',
@@ -26,36 +21,6 @@ const App = () => {
       'BAGS',
       'OTHER'
   ]
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = () => {
-    loadItems();
-    // loadEmails()
-  };
-
-  const loadItems = () => {
-    itemService.fetchItems()
-        .then((data) => {
-          setItems(data.data.content);
-        });
-  };
-
-  // const loadUsers = () => {
-  //   userService.fetchUsers()
-  //       .then((data) => {
-  //         setUsers(data.data);
-  //       });
-  // };
-  //
-  // const loadEmails = () => {
-  //   emailService.fetchEmails()
-  //       .then((data) => {
-  //         setEmails(data.data);
-  //       });
-  // };
 
   // const deleteProduct = (id) => {
   //   EShopService.deleteProduct(id)
@@ -92,11 +57,11 @@ const App = () => {
           <div className="container">
               {/*<Router>*/}
                   <Routes>
-                      <Route path="/items" element={<ItemsPage items={items} categories={categories}/>} />
+                      <Route path="/items" element={<ItemsPage categories={categories}/>} />
                       <Route path="/items/add" element={<AddItem categories={categories} />} />
+                      <Route path="/items/edit/:id" element={<AddItem categories={categories} />} />
                       <Route path="/login" element={<Login />} />
-                      {/*TODO change once login is implemented*/}
-                      <Route path="/userDetails" element={<UserDetails />} />
+                      <Route path="/users/:id" element={<UserDetails />} />
                       {/* other routes */}
                   </Routes>
               {/*</Router>*/}

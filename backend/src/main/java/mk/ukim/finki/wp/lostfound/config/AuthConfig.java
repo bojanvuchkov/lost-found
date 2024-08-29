@@ -1,50 +1,39 @@
 package mk.ukim.finki.wp.lostfound.config;
 
+import lombok.AllArgsConstructor;
 import mk.ukim.finki.wp.lostfound.model.enums.AppRole;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@AllArgsConstructor
 public class AuthConfig {
 
+    private JwtAuthenticationEntryPoint authenticationEntryPoint;
+
+    private JwtAuthenticationFilter authenticationFilter;
+
     public HttpSecurity authorize(HttpSecurity http) throws Exception {
-        return http
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**").disable())
-                .authorizeHttpRequests((requests) -> requests
-                                .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                                .anyRequest().permitAll()
-//                        .requestMatchers("/admin/subject-requests/my",
-//                                "/engagement/my",
-//                                "/engagement/add",
-//                                "/engagement/edit/**",
-//                                "/engagement/save/**",
-//                                "/engagement/delete/**",
-//                                "/admin/joined-subjects",
-//                                "/admin/joined-subjects/add",
-//                                "/admin/joined-subjects/edit/**",
-//                                "/admin/joined-subjects/save",
-//                                "/admin/course-preferences/add",
-//                                "/admin/course-preferences/edit/**",
-//                                "/admin/course-preferences/save",
-//                                "/admin/course-preferences",
-//                                "/items"
-//                                ).hasAnyRole(
-//                                AppRole.PROFESSOR.name(),
-//                                AppRole.ADMIN.name()
-//                        )
-//                        .requestMatchers("/admin/subject-requests/{professorId}/**").access(
-//                                new WebExpressionAuthorizationManager("#professorId == authentication.name or hasRole('ROLE_PROFESSOR')")
-//                        )
-//                        .requestMatchers("/engagement/{professorId}/**").access(
-//                                new WebExpressionAuthorizationManager("#professorId == authentication.name or hasRole('ROLE_PROFESSOR')")
-//                        )
-//                        .requestMatchers("/admin/**", "/api/**", "/build/**", "/engagement/init").hasAnyRole(
-//                                AppRole.ADMIN.name()
-//                        )
-//                        .requestMatchers("/active-subjects", "io.png", "/allocation/*").permitAll()
-//                                .anyRequest().permitAll()
-                )
-                .logout((logout) -> logout.logoutSuccessUrl("/items"));
+        http.csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests((authorize) -> {
+                    authorize.requestMatchers("/api/auth/**").permitAll();
+                    authorize.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
+                    authorize.anyRequest().authenticated();
+                }).httpBasic(Customizer.withDefaults());
+
+        http.exceptionHandling( exception -> exception
+                .authenticationEntryPoint(authenticationEntryPoint));
+
+        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        http.logout((logout) -> logout.logoutSuccessUrl("/items"));
+        return http;
     }
 
 }

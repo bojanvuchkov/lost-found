@@ -19,6 +19,10 @@ public class CasSecurityConfig extends AuthConfig {
     @Autowired
     CasAuthenticationProvider provider;
 
+    public CasSecurityConfig(JwtAuthenticationEntryPoint authenticationEntryPoint, JwtAuthenticationFilter authenticationFilter) {
+        super(authenticationEntryPoint, authenticationFilter);
+    }
+
     @Bean
     @Order(100)
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CasAuthenticationConfigurer casConfigurer, AuthenticationUserDetailsService userDetailsService) throws Exception {

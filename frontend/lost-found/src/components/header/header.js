@@ -1,19 +1,21 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
+import io from '../../io.png'
 
-const header = (props) => {
+const header = () => {
     let authenticate
     if (localStorage.getItem("JWT")) {
         authenticate = (<button className="btn btn-outline-info my-2 my-sm-0"
-                                onClick={() => localStorage.removeItem("JWT")}>Logout</button>);
+                                onClick={() => handleLogout()}>Logout</button>);
     } else {
         authenticate = (<Link className="btn btn-outline-info my-2 my-sm-0" to={"/login"}>Login</Link>);
     }
 
-    const isAuthenticated = !!localStorage.getItem("JWT");
+    const isAuthenticated = localStorage.getItem("JWT");
 
     const handleLogout = () => {
         localStorage.removeItem("JWT");
+        localStorage.removeItem("userId")
         window.location.href = "/login";
     };
 
@@ -22,7 +24,7 @@ const header = (props) => {
             <div
                 className="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start d-print-none">
                 <a href="/" className="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-                    <img src={'../../io.png'} style={{width: '25px'}} alt={'image'}/>
+                    <img src={io} style={{width: '25px'}} alt={'image'}/>
                 </a>
 
                 <ul className="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
@@ -32,7 +34,7 @@ const header = (props) => {
                     </li>
                     {isAuthenticated && (
                         <li>
-                            <Link className="nav-link px-2 text-white" to={`/users/${props.userId}`}>Profile</Link>
+                            <Link className="nav-link px-2 text-white" to={`/users/${localStorage.getItem('userId')}`}>Profile</Link>
                         </li>
                     )}
                     <li>

@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 
-const FilterForm = ({ onFilter }) => {
+const FilterForm = ({ onFilter,categories }) => {
     const [filters, setFilters] = useState({
         name: '',
         isLost: 'All',
         status: 'OPEN',
         category: 'All',
     });
-
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setFilters({
@@ -72,9 +71,11 @@ const FilterForm = ({ onFilter }) => {
                 onChange={handleInputChange}
             >
                 <option value="All">All</option>
-                {/* Map over categories if you have them fetched from an API */}
-                {/* categories.map(cat => <option key={cat} value={cat}>{cat}</option>) */}
-            </select>
+                {categories.categories.map((cat, index) => (
+                    <option key={index} value={cat}>
+                        {cat}
+                    </option>
+                ))}            </select>
 
             <button type="submit" className="btn btn-primary">Search</button>
         </form>

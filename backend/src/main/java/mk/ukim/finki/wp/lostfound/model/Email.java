@@ -15,9 +15,9 @@ public class Email {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private User sender;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private User receiver;
     private String subject;
     private String message;

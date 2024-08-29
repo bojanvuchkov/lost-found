@@ -38,38 +38,13 @@ public class UserRestController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDetailsDTO> getDetails(@PathVariable String id, Model model) {
+    public ResponseEntity<UserDetailsDTO> getDetails(@PathVariable String id) {
         User user = userService.findById(id).orElseThrow(UserNotFoundException::new);
-//        model.addAttribute("loggedInUser", loggedInUser);
-//        HashMap<Email, String> dateTimesEmails = new HashMap<>();
-//
-//        emailRepository.findAllByReceiver(loggedInUser).forEach(email -> {
-//            dateTimesEmails.put(email, email.getDateTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
-//        });
-//        model.addAttribute("dateTimesEmails",dateTimesEmails);
-//        model.addAttribute("receivedEmails",emailRepository.findAllByReceiver(loggedInUser));
-//        List<Item> items = itemService.listItems(PageRequest.ofSize(100)).stream().filter(item -> item.getUser().getId().equals(loggedInUser.getId())).toList();
-//        model.addAttribute("items",items);
-//        HashMap<Item, String> dateTimes = new HashMap<>();
-//        HashMap<Item, String> images = new HashMap<>();
-//        items.forEach(item -> {
-//            dateTimes.put(item, item.getDateRegistered().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
-//            images.put(item, Base64.getEncoder().encodeToString(item.getImage()));
-//        });
-//        model.addAttribute("images", images);
-//        model.addAttribute("dateTimes", dateTimes);
         if(user!=null) {
-            List<Item> items = itemService.listItems(PageRequest.ofSize(100)).stream().filter(item -> item.getUser().getId().equals("riste.stojanov")).toList();
-            HashMap<Long, String> dateTimesEmails = new HashMap<>();
-            HashMap<Long, String> dateTimes = new HashMap<>();
+            List<Item> items = itemService.findItemsByUser(user);
             List<Email> receivedEmails = emailRepository.findAllByReceiver(user);
-            receivedEmails.forEach(email -> {
-                dateTimesEmails.put(email.getId(), email.getDateTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
-            });
-            items.forEach(item -> {
-                dateTimes.put(item.getId(), item.getDateRegistered().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
-            });
-            UserDetailsDTO dto = new UserDetailsDTO(user, items, dateTimesEmails, receivedEmails, dateTimes);
+
+            UserDetailsDTO dto = new UserDetailsDTO(user, items, receivedEmails);
             return ResponseEntity.ok(dto);
         }
         else
@@ -84,16 +59,6 @@ public class UserRestController {
         this.userService.deleteMessage(id, messageId);
         return new ResponseEntity<>("Item deleted successfully", HttpStatus.NO_CONTENT);
     }
-
-//    @PostMapping ("/{id}/deleteMessage/{messageId}")
-//    public String deleteMessage(HttpServletRequest request,
-//                                @PathVariable String id,
-//                                @PathVariable Long messageId,
-//                                Model model) {
-//        if(request.getUserPrincipal().getName().equals(id))
-//            this.userService.deleteMessage(id, messageId);
-//        return "redirect:/users/{id}";
-//    }
 
     @GetMapping("/contact/{id}")
     public String sendMailFrom(HttpServletRequest request,

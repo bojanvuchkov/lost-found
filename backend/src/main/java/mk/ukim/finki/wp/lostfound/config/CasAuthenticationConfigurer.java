@@ -29,7 +29,6 @@ public class CasAuthenticationConfigurer extends AbstractHttpConfigurer<CasAuthe
     @Value("${cas.client-host-url}")
     private String casClientHostUrl;
 
-
     @Override
     public void init(HttpSecurity http) throws Exception {
         super.init(http);
@@ -42,10 +41,7 @@ public class CasAuthenticationConfigurer extends AbstractHttpConfigurer<CasAuthe
                 .addFilterBefore(requestCasGlobalLogoutFilter(), LogoutFilter.class)
                 .exceptionHandling(handler -> handler.authenticationEntryPoint(casAuthenticationEntryPoint()))
                 .logout(logout -> logout.logoutSuccessUrl(casUrlPrefix + "/logout?service=" + casClientHostUrl));
-
-
     }
-
 
     @Bean
     public ServiceProperties serviceProperties() {
