@@ -25,5 +25,4 @@ public interface ItemService {
     void delete(Long id);
 
     List<Item> findItemsByUser(User user);
-
 }

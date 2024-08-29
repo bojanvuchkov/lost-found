@@ -35,4 +35,7 @@ public interface ItemRepository extends JpaSpecificationRepository<Item, Long>{
     Page<Item> findAllByStatus(Status status, Pageable pageable);
 
     List<Item> findAllByUser(User user);
+
+    //TODO issue 2
+    List<Item> findByDescriptionContainingAndCategoryAndLostIsNot(String description, Category category, boolean isLost);
 }

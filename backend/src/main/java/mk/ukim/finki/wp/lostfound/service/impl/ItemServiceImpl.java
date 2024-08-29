@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import mk.ukim.finki.wp.lostfound.config.JwtAuthenticationFilter;
 import mk.ukim.finki.wp.lostfound.config.JwtTokenProvider;
 import mk.ukim.finki.wp.lostfound.model.Category;
+import mk.ukim.finki.wp.lostfound.model.Email;
 import mk.ukim.finki.wp.lostfound.model.Item;
 import mk.ukim.finki.wp.lostfound.model.User;
 import mk.ukim.finki.wp.lostfound.model.enums.Status;
@@ -90,11 +91,34 @@ public class ItemServiceImpl implements ItemService {
         try {
             byte[] imageBytes = IOUtils.toByteArray(new URL("https://clipground.com/images/no-image-png-5.jpg"));
             item = new Item(name, description, lost, category, file != null && !file.isEmpty() ? file.getBytes() : imageBytes, location, user);
+            //TODO issue 2
+//            List<Item> matchingItems = findMatchingItems(item);
+//            if (!matchingItems.isEmpty()) {
+//                notifyUsers(matchingItems, item);
+//                item.setMatchingFound(true);
+//            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return itemRepository.save(item);
     }
+
+    //TODO issue 2
+//    private List<Item> findMatchingItems(Item item) {
+//        return itemRepository.findByDescriptionContainingAndCategoryAndLostIsNot(
+//                item.getDescription(), item.getCategory(), item.isLost());
+//    }
+//
+//    private void notifyUsers(List<Item> matchingItems, Item newItem) {
+//        for (Item matchingItem : matchingItems) {
+//            User receiver = matchingItem.getUser();
+//            // create a message and send it with sendNotification
+//        }
+//    }
+//
+//    private void sendNotification(User receiver, Email message) {
+//        // use the existing message system
+//    }
 
     @Override
     public Item update(Long id, String name, String description, String isLost, String status, Category category, MultipartFile file, String location) {
