@@ -1,0 +1,50 @@
+/* ItemDetails.css */
+
+.item-details-card {
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.item-image {
+    border-radius: 12px;
+    object-fit: cover;
+    max-height: 400px;
+}
+
+.item-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.card-text {
+    font-size: 1rem;
+    color: #555;
+}
+
+.contact-link {
+    color: #007bff;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.contact-link:hover {
+    text-decoration: underline;
+}
+
+.actions .btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 8px;
+}
+
+.actions .btn-danger {
+    background-color: #e74c3c;
+    border-color: #e74c3c;
+}
+
+.actions .btn-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+}

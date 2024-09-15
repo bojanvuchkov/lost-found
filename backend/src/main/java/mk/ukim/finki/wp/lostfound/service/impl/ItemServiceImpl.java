@@ -92,6 +92,7 @@ public class ItemServiceImpl implements ItemService {
         Item item;
         try {
             byte[] imageBytes = IOUtils.toByteArray(new URL("https://clipground.com/images/no-image-png-5.jpg"));
+            item = new Item(name, description, lost, category, file != null && !file.isEmpty() ? file.getBytes() : imageBytes, location, user);
 
             List<Item> matchingItems = findMatchingItems(item);
             if (!matchingItems.isEmpty()) {
