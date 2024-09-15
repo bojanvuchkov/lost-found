@@ -88,6 +88,16 @@ public class ItemRestController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getItem(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(itemService.findById(id));
+        }
+        catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
 
 

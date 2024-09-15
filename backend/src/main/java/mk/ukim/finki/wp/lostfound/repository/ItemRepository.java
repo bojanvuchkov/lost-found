@@ -36,6 +36,6 @@ public interface ItemRepository extends JpaSpecificationRepository<Item, Long>{
 
     List<Item> findAllByUser(User user);
 
-    //TODO issue 2
-    List<Item> findByDescriptionContainingAndCategoryAndLostIsNot(String description, Category category, boolean isLost);
+    @Query("SELECT i FROM Item i WHERE LOWER(i.description) LIKE LOWER(CONCAT('%', :description, '%')) AND i.category = :category AND i.isLost = :isLost")
+    List<Item> findAllByDescriptionContainingIgnoreCaseAndCategoryAndIsLostFalse(String description, Category category, boolean isLost);
 }

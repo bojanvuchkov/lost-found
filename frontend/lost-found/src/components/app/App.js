@@ -7,6 +7,7 @@ import AddItem from "../items-page/AddItem";
 import UserDetails from "../users/Details";
 import React from "react";
 import Mail from "../users/Mail";
+import ItemDetailsPage from "../items-page/ItemDetailsPage";
 
 const App = () => {
   const categories = [
@@ -61,6 +62,7 @@ const App = () => {
                       <Route path="/items" element={<ItemsPage categories={categories}/>} />
                       <Route path="/items/add" element={<AddItem categories={categories} />} />
                       <Route path="/items/edit/:id" element={<AddItem categories={categories} />} />
+                      <Route path="/items/:id" element={<ItemDetailsPage />} />
                       <Route path="/login" element={<Login />} />
                       <Route path="/users/:id" element={<UserDetails />} />
                       <Route path="/users/contact/:id" element={<Mail />} />

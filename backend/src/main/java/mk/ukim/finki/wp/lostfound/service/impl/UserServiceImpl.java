@@ -47,8 +47,6 @@ public class UserServiceImpl implements UserService {
         String username = request.getUserPrincipal().getName();
         User sen=userRepository.findById(username).orElseThrow(UserNotFoundException::new);
         Email email = new Email(sen, rec, subject, message);
-        //rec.getReceivedEmails().add(email);
         emailRepository.save(email);
-        //userRepository.save(rec);
     }
 }

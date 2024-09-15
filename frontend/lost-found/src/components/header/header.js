@@ -1,6 +1,8 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import io from '../../io.png'
+import Notification from "../notification/Notification";
+
 
 const header = () => {
     let authenticate
@@ -12,6 +14,7 @@ const header = () => {
     }
 
     const isAuthenticated = localStorage.getItem("JWT");
+
 
     const handleLogout = () => {
         localStorage.removeItem("JWT");
@@ -29,12 +32,15 @@ const header = () => {
 
                 <ul className="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
                     style={{marginLeft: '80%'}}>
+                    <li><Notification></Notification>
+                    </li>
                     <li>
                         <Link className="nav-link px-2 text-white" to={"/items"}>Items</Link>
                     </li>
                     {isAuthenticated && (
                         <li>
-                            <Link className="nav-link px-2 text-white" to={`/users/${localStorage.getItem('userId')}`}>Profile</Link>
+                            <Link className="nav-link px-2 text-white"
+                                  to={`/users/${localStorage.getItem('userId')}`}>Profile</Link>
                         </li>
                     )}
                     <li>

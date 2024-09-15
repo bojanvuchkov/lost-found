@@ -167,6 +167,7 @@ const AddItem = (categories) => {
                 </div>
 
                 <button type="submit" className="btn btn-primary">Submit</button>
+                <SendNotification></SendNotification>
             </form>
         </div>
     );
