@@ -92,7 +92,7 @@ public class ItemServiceImpl implements ItemService {
         Item item;
         try {
             byte[] imageBytes = IOUtils.toByteArray(new URL("https://clipground.com/images/no-image-png-5.jpg"));
-            item = new Item(name, description, lost, category, file != null && !file.isEmpty() ? file.getBytes() : imageBytes, location, user);
+            item = itemRepository.save(new Item(name, description, lost, category, file != null && !file.isEmpty() ? file.getBytes() : imageBytes, location, user));
 
             List<Item> matchingItems = findMatchingItems(item);
             if (!matchingItems.isEmpty()) {
@@ -106,16 +106,18 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private List<Item> findMatchingItems(Item item) {
-        return itemRepository.findAllByDescriptionContainingIgnoreCaseAndCategoryAndIsLostFalse(
-                item.getDescription(), item.getCategory(), item.isLost());
+        return itemRepository.findAllByDescriptionContainingIgnoreCaseAndCategoryAndIsLostTrue(
+                item.getDescription(), item.getCategory().toString());
     }
 
     private void notifyUsers(List<Item> matchingItems, Item item) {
         for (Item matchingItem : matchingItems) {
             User receiver = matchingItem.getUser();
             User sender = userRepository.findByEmail("lost-found@finki.ukim.mk").orElseThrow(UserNotFoundException::new);
-            Email email = new Email(sender, receiver, "Similar item", item.getId().toString());
-            emailRepository.save(email);
+            if(!item.getUser().getId().equals(matchingItem.getUser().getId())) {
+                Email email = new Email(sender, receiver, "Similar item", item.getId().toString());
+                emailRepository.save(email);
+            }
         }
     }
 

@@ -39,6 +39,10 @@ const Notification = () => {
     }, []);
 
     const toggleModal = () => {
+        itemService.getUser(localStorage.getItem('userId'))
+            .then(response => {
+                setNotifications(response.data.receivedEmails)
+            })
         setModalIsOpen(!modalIsOpen);
     };
     const closeModal = () => {
