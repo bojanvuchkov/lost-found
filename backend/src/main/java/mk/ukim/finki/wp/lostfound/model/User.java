@@ -27,6 +27,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @Column(columnDefinition = "int default 0")
+    private int points;
+
     public User(String name, String email, UserRole role) {
         this.name = name;
         this.email = email;

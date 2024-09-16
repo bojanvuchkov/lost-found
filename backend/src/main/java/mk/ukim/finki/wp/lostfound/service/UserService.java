@@ -3,6 +3,7 @@ package mk.ukim.finki.wp.lostfound.service;
 import jakarta.servlet.http.HttpServletRequest;
 import mk.ukim.finki.wp.lostfound.model.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
@@ -10,4 +11,5 @@ public interface UserService {
     void deleteMessage(String userId, Long messageId);
     Optional<User> findByEmail(String email);
     void sendMail(HttpServletRequest request, String receiverMail, String subject, String message);
+    List<User> findTop10();
 }

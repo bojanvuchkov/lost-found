@@ -49,4 +49,9 @@ public class UserServiceImpl implements UserService {
         Email email = new Email(sen, rec, subject, message);
         emailRepository.save(email);
     }
+
+    @Override
+    public List<User> findTop10() {
+        return userRepository.findTop10ByOrderByPointsDesc();
+    }
 }

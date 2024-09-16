@@ -42,6 +42,9 @@ const userService = {
     },
     deleteMessage: (id, messageId) => {
         return axios.delete(`/users/${id}/deleteMessage/${messageId}`)
+    },
+    getTopUsers: () => {
+        return axios.get('/users/top');
     }
 }
 

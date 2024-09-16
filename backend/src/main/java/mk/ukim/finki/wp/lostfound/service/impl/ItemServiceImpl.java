@@ -99,6 +99,11 @@ public class ItemServiceImpl implements ItemService {
                 notifyUsers(matchingItems, item);
                 item.setMatchingFound(true);
             }
+
+            if(!lost) {
+                user.setPoints(user.getPoints() + 10);
+                userRepository.save(user);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

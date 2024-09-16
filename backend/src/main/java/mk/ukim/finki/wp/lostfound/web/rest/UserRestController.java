@@ -52,11 +52,18 @@ public class UserRestController {
             return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/top")
+    public ResponseEntity<List<User>> getTopUsers() {
+        List<User> topUsers = userService.findTop10();
+
+        if (topUsers.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(topUsers, HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}/deleteMessage/{messageId}")
     public ResponseEntity<String> deleteMessage(HttpServletRequest request, @PathVariable String id, @PathVariable Long messageId) {
-        //TODO fix once login works
-//        if(request.getUserPrincipal().getName().equals(item.getUser().getId()))
-//            this.itemService.delete(id);
         this.userService.deleteMessage(id, messageId);
         return new ResponseEntity<>("Item deleted successfully", HttpStatus.NO_CONTENT);
     }
